@@ -46,17 +46,27 @@ namespace Practic1
                 
             do
             {
-
                 if (!continueGame)
                 {
                     SayGoodbye();
 
                     return;
                 }
+                
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("╔════════════════════════════════════════════╗");
+                Console.WriteLine("║               Start battle                 ║");
+                Console.WriteLine("╚════════════════════════════════════════════╝");
+                Console.ResetColor();
 
                 for (int round = 1; round <= 3; round++)
                 {
-                    Console.WriteLine($"ROUND {round}/3\n");
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("╔════════════════════════════════════════════╗");
+                    Console.Write($"║                 ROUND {round}/3");
+                    Console.WriteLine(new string(' ', 18) + "║");
+                    Console.WriteLine("╚════════════════════════════════════════════╝");
+                    Console.ResetColor();
 
                     bool roundNotFinished = true;
                     
@@ -68,12 +78,22 @@ namespace Practic1
                         ShowChoices();
                         ResolveRound(ref roundNotFinished);
                     } while (roundNotFinished);
-                    
-                    Console.WriteLine("\nPress Enter to continue...");
-                    Console.ReadLine();
+
+
+                    if (round < 3)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("╔════════════════════════════════════════════╗");
+                        Console.WriteLine("║          Press Enter to continue...        ║");
+                        Console.WriteLine("╚════════════════════════════════════════════╝");
+                        Console.ResetColor();
+                        Console.ReadLine();
+                    }
                 }
                 
                 ShowFinalResults();
+
+                ResetScore();
                 
                 ShowPlayerStats();
 
@@ -81,26 +101,47 @@ namespace Practic1
 
             } while (continueGame);
         }
+
+        private static void ResetScore()
+        {
+            BotScore = 0;
+            PlayerScore = 0;
+        }
         
         static void ShowFinalResults()
         {
-            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine("╔════════════════════════════════════════════╗");
-            Console.WriteLine("║        GAME OVER                           ║");
+            Console.WriteLine("║                BATTLE OVER                 ║");
             Console.WriteLine("╠════════════════════════════════════════════╣");
-            Console.WriteLine($"║ {PlayerName}: {PlayerScore} wins          ║");
-            Console.WriteLine($"║ Bot: {BotScore} wins                      ║");
+            
+            string playerLine = $"║ {PlayerName}: {PlayerScore} wins".PadRight(45) + "║";
+            string botLine = $"║ Bot:    {BotScore} wins".PadRight(45) + "║";
+
+            Console.WriteLine(playerLine);
+            Console.WriteLine(botLine);
             Console.WriteLine("╚════════════════════════════════════════════╝");
+            
             Console.ResetColor();
 
             if (PlayerScore > BotScore)
             {
-                Console.WriteLine("\n You are the winner!");
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("╔════════════════════════════════════════════╗");
+                Console.WriteLine("║           You are the winner!              ║");
+                Console.WriteLine("╚════════════════════════════════════════════╝");
+                Console.ResetColor();
+                
                 PlayerWin++;
             }
             else if (BotScore > PlayerScore)
             {
-                Console.WriteLine("\n Bot wins! Better luck next time.");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("╔════════════════════════════════════════════╗");
+                Console.WriteLine("║    Bot wins! Better luck next time.        ║");
+                Console.WriteLine("╚════════════════════════════════════════════╝");
+                Console.ResetColor();
+                
                 PlayerLoss++;
                 BotWin++;
             }
@@ -110,23 +151,37 @@ namespace Practic1
         
         static void ResolveRound(ref bool roundNotFinished)
         {
+            
             if (PlayerWeapon == BotWeapon)
             {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("It's a draw!");
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.WriteLine("╔════════════════════════════════════════════╗");
+                Console.WriteLine("║                It's a draw!                ║");
+                Console.WriteLine("╚════════════════════════════════════════════╝");
+                
                 roundNotFinished = true;
             } 
-            else if ((PlayerWeapon == 1 && BotWeapon == 3) || (PlayerWeapon == 2 && BotWeapon == 1) || (PlayerWeapon == 3 && BotWeapon == 2))
+            else if (
+                    (PlayerWeapon == 1 && BotWeapon == 3)
+                    || (PlayerWeapon == 2 && BotWeapon == 1)
+                    || (PlayerWeapon == 3 && BotWeapon == 2)
+                )
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("You win this round!");
+                Console.WriteLine("╔════════════════════════════════════════════╗");
+                Console.WriteLine("║            You win this round!             ║");
+                Console.WriteLine("╚════════════════════════════════════════════╝");
+                
                 PlayerScore++;
                 roundNotFinished = false;
             }
             else
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("You lost this round!");
+                Console.WriteLine("╔════════════════════════════════════════════╗");
+                Console.WriteLine("║           You lost this round              ║");
+                Console.WriteLine("╚════════════════════════════════════════════╝");
+                
                 BotScore++;
                 roundNotFinished = false;
             }
@@ -136,8 +191,12 @@ namespace Practic1
         
         private static void ShowChoices()
         {
-            Console.WriteLine($"\n{PlayerName} chose: {weapons[PlayerWeapon - 1]}");
-            Console.WriteLine($"Bot chose: {weapons[BotWeapon - 1]}");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("╔════════════════════════════════════════════╗");
+            Console.WriteLine($"║ {PlayerName,-10} chose: {weapons[PlayerWeapon - 1],-25}║");
+            Console.WriteLine($"║ {"Bot",-10} chose: {weapons[BotWeapon - 1],-25}║");
+            Console.WriteLine("╚════════════════════════════════════════════╝");
+            Console.ResetColor();
         }
 
         private static void SetWeaponForBot()
@@ -149,22 +208,29 @@ namespace Practic1
         
         private static void SelectWeapon()
         {
-            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            
             Console.WriteLine("╔════════════════════════════════════════════╗");
-            Console.WriteLine("║         CHOOSE YOUR WEAPON!                ║");
+            Console.WriteLine("║             CHOOSE YOUR WEAPON!            ║");
             Console.WriteLine("╠════════════════════════════════════════════╣");
             Console.WriteLine("║ [1] ROCK                                   ║");
             Console.WriteLine("║ [2] PAPER                                  ║");
             Console.WriteLine("║ [3] SCISSORS                               ║");
             Console.WriteLine("╚════════════════════════════════════════════╝");
+            
+            Console.WriteLine("╔════════════════════════════════════════════╗");
+            Console.WriteLine("║               Your choice:                 ║");
+            Console.WriteLine("╚════════════════════════════════════════════╝");
+            
             Console.ResetColor();
-            Console.Write("Your choice: "); 
             
             int weapon;
 
             while (true)
             { 
+                Console.ForegroundColor = ConsoleColor.Green;
                 string input = Console.ReadLine();
+                Console.ResetColor();
 
                 if (int.TryParse(input, out weapon) && (weapon >= 1 && weapon <= 3))
                 {
@@ -172,7 +238,9 @@ namespace Practic1
                 }
 
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Invalid input! Please enter 1, 2 or 3.");
+                Console.WriteLine("╔════════════════════════════════════════════╗");
+                Console.WriteLine("║    Invalid input! Please enter 1, 2 or 3.  ║");
+                Console.WriteLine("╚════════════════════════════════════════════╝");
                 Console.ResetColor();
             }
 
@@ -187,16 +255,26 @@ namespace Practic1
             
             while (true)
             {
-                Console.Write("Your choice (1 or 0): ");
+                
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("╔════════════════════════════════════════════╗");
+                Console.WriteLine("║           Your choice (1 or 0):            ║");
+                Console.WriteLine("╚════════════════════════════════════════════╝");
+                Console.ResetColor();
+                
+                Console.ForegroundColor = ConsoleColor.Green;
                 string input = Console.ReadLine();
+                Console.ResetColor();
 
                 if (int.TryParse(input, out isStart) && (isStart == 0 || isStart == 1))
                 {
                     break;
                 }
-    
+                
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Invalid input! Please enter 0 or 1.");
+                Console.WriteLine("╔════════════════════════════════════════════╗");
+                Console.WriteLine("║    Invalid input! Please enter 0 or 1.     ║");
+                Console.WriteLine("╚════════════════════════════════════════════╝");
                 Console.ResetColor();
             }
 
@@ -214,16 +292,20 @@ namespace Practic1
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("╔════════════════════════════════════════════╗");
-                Console.WriteLine("║            What is your name?              ║");
+                Console.WriteLine("║             What is your name?             ║");
                 Console.WriteLine("╚════════════════════════════════════════════╝");
                 Console.ResetColor();
             
+                Console.ForegroundColor = ConsoleColor.Green;
                 PlayerName = Console.ReadLine();
+                Console.ResetColor();
                 
                 if (PlayerName.Length > 18 )
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Please enter a name shorter than 18 characters.");
+                    Console.WriteLine("╔════════════════════════════════════════════╗");
+                    Console.WriteLine("║        Please enter a name shorter.        ║");
+                    Console.WriteLine("╚════════════════════════════════════════════╝");
                     Console.ResetColor();
                     
                     continue;
@@ -247,13 +329,16 @@ namespace Practic1
             Console.WriteLine("╚════════════════════════════════════════════╝");
             Console.ResetColor();
             
-            
+            Console.ForegroundColor = ConsoleColor.Green;
             PlayerAge = int.Parse(Console.ReadLine());
+            Console.ResetColor();
 
-            if (PlayerAge < 13 )
+            if (PlayerAge < 13  || PlayerAge > 100)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Sorry but you can not play. Please grow up ^-^");
+                Console.WriteLine("╔════════════════════════════════════════════╗");
+                Console.WriteLine("║            Please grow up ^-^              ║");
+                Console.WriteLine("╚════════════════════════════════════════════╝");
                 Console.ResetColor();
                 
                 continueGame = false;
@@ -266,14 +351,13 @@ namespace Practic1
 
             var message = countGames == 0
                 ? "Are you ready to start the battle?"
-                : PlayerWin > BotWin 
+                : PlayerWin >= BotWin 
                     ? "Do you want to destroy bot again?" 
                     : "Do you want a rematch against the bot?"
             ;
             
-            Console.WriteLine($"        {message}");
+            Console.WriteLine($"  {message}");
             Console.WriteLine("╔════════════════════════════════════════════╗");
-            
             Console.WriteLine("║                                            ║");
 
             Console.Write("║ [1] ");
@@ -291,7 +375,6 @@ namespace Practic1
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("╚════════════════════════════════════════════╝");
             Console.ResetColor();
-            Console.Write("Your choice: ");
         }
 
         private static void ShowPlayerStats()
@@ -320,7 +403,7 @@ namespace Practic1
 
         private static void SayGoodbye()
         {
-            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("╔════════════════════════════════════════════╗");
             Console.WriteLine("║                 GOODBYE!                   ║");
             Console.WriteLine("║             UNTIL NEXT TIME!               ║");
